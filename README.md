@@ -1,4 +1,5 @@
-android-camera-api-example
-==========================
+WatchDogs 
+ 
+=======================
 
-Code from the demo I gave at [Ottawa Android](http://ottawaandroid.ca/) on September 26th 2012.
+Have you phone look out for you!

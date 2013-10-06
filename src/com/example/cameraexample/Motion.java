@@ -1,53 +1,44 @@
-package com.example.cameraexample;
-
 public class Motion {
 	
 	public final static int Background = 0;
 	public final static int Foreground = 255;
-
-	/*
 	
 	public static void main(String[] args) {
 		
 		int[][] map1 = {{147,177,142,42,62},{54,155,12,87,24},{5,92,42,155,166,24},{216,47,221,226,212},{82,172,65,159,98}};
-		PGM frame1 = new PGM(map1);
 		
-		System.out.println("Map 1: ");
+		//System.out.println("Map 1: ");
 		
-		print(frame1);
+		//print(map1);
 		
-		int[][] map2 = {{5,5,5,42,23},{2,3,76,52,47},{5,92,45,155,45,99},{145,47,76,25,212},{82,172,65,25,98}};
-		PGM frame2 = new PGM(map2);
+		int[][] map2 = {{147,177,1,42,1},{54,1,12,1,24},{5,1,1,1,1,1},{1,1,1,1,1},{1,1,1,1,1}};
 		
-		System.out.println("Map 2: ");
+		//System.out.println("Map 2: ");
 		
-		print(frame2);
+		//print(map2);
 		
-		int threshold = 55;
-		int noise = 2;
+		int threshold = 1;
+		int noise = 3;
 		
-		PGM[] result = Detect(frame1, frame2, threshold, noise);
-		
-		System.out.println("Step 1: ");
-		print(result[0]);
-		
-		System.out.println("Step 2: ");
-		print(result[1]);
+		boolean result = Detect(map1, map2, threshold, noise);
+		System.out.println(result);
 	}
 	
-	*/
-	
-	public static void print(PGM frame) {
-		for (int i = 0; i < frame.getWidth(); i++) {
-			for (int j = 0; j < frame.getHeight(); j++) {
-				System.out.print(frame.getPixel(i, j) + "   ");
+	public static void print(int[][] frame) {
+		for (int i = 0; i < frame.length; i++) {
+			for (int j = 0; j < frame[0].length; j++) {
+				System.out.print(frame[i][j] + "   ");
 			}
 			System.out.println();
 		}
 	}
 	
-	public static PGM[] Detect(PGM frame1, PGM frame2, int differenceThreshold, int noiseFilterSize)
+	public static boolean Detect(int[][] f1, int[][] f2, int differenceThreshold, int noiseFilterSize)	
 	{
+		
+		PGM frame1 = new PGM(f1);
+		PGM frame2 = new PGM(f2);
+		
 	    int width = (int)frame1.getWidth();
 	    int height = (int)frame1.getHeight();
 
@@ -58,7 +49,6 @@ public class Motion {
 	        for (int y = 0; y < height; y++)
 	        {
 	            int diff = Math.abs(frame1.getPixel(x, y) - frame2.getPixel(x, y));
-	            System.out.println(diff);
 	            step1Image.setPixel(x, y, diff >= differenceThreshold ? Foreground : Background);
 	        }
 	    }
@@ -71,10 +61,11 @@ public class Motion {
 	        {
 	            //count the number of marked pixels in current window
 	            int marked = 0;
-	            for (int i = x - n; i < x + n; i++)
+	            for (int i = x - n; i < x + n; i++){
 	                for (int j = y - n; j < y + n; j++) {
-	                    marked += step1Image.getPixel(i, j) == Foreground ? 1 : 0;
+	                    marked += step1Image.getPixel(x+i, y+j) == Foreground ? 1 : 0;
 	                }
+	            }
 
 	            if (marked >= m) //if atleast half the number of pixels are marked, then mark the full window
 	            {
@@ -89,7 +80,14 @@ public class Motion {
 	    imgSteps[0] = step1Image;
 	    imgSteps[1] = step2Image;
 	    
-	    return imgSteps;
+		
+		//System.out.println("Step 1: ");
+		//print(imgSteps[0].getMap());
+		
+		//System.out.println("Step 2: ");
+		//print(imgSteps[1].getMap());
+	    
+	    return false;
 	}
 	
 }
@@ -116,6 +114,9 @@ class PGM {
 	}
 	
 	public int getPixel(int x, int y) {
+		if (x < 0 || y < 0 || x >= sizeX || y >= sizeY) {
+			return 0;
+		}
 		return Map[x][y];
 	}
 	
@@ -123,6 +124,7 @@ class PGM {
 		Map[x][y] = v;
 	}
 	
-	
-	
+	public int[][] getMap() {
+		return Map;
+	}
 }
